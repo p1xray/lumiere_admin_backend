@@ -4,15 +4,19 @@ import (
 	"context"
 
 	"github.com/p1xray/lumiere_admin_backend/internal/domain"
+	"github.com/p1xray/lumiere_admin_backend/internal/repositories"
 )
 
 // Сервис кинотеатров
 type CinemaService struct {
+	CinemaRepo repositories.Cinemas
 }
 
 // Возвращает новый сервис кинотеатров
-func NewCinemaService() *CinemaService {
-	return &CinemaService{}
+func NewCinemaService(c repositories.Cinemas) *CinemaService {
+	return &CinemaService{
+		CinemaRepo: c,
+	}
 }
 
 // Возвращает список кинотеатров

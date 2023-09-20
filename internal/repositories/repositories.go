@@ -1,6 +1,9 @@
 package repositories
 
-import "github.com/p1xray/lumiere_admin_backend/internal/repositories/cinemarepository"
+import (
+	"github.com/p1xray/lumiere_admin_backend/internal/repositories/cinemarepository"
+	"github.com/p1xray/lumiere_admin_backend/pkg/postgres"
+)
 
 // Интерфейс репозитория кинотеатра
 type Cinemas interface {
@@ -13,11 +16,12 @@ type Repositories struct {
 
 // Зависимости репозиториев
 type Deps struct {
+	Postgres *postgres.Postgres
 }
 
 // Возвращает репозитории с зависимостями
 func NewRepositories(deps Deps) *Repositories {
 	return &Repositories{
-		Cinemas: cinemarepository.NewCinemaRepository(),
+		Cinemas: cinemarepository.NewCinemaRepository(deps.Postgres),
 	}
 }

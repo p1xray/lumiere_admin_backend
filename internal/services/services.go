@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/p1xray/lumiere_admin_backend/internal/domain"
+	"github.com/p1xray/lumiere_admin_backend/internal/repositories"
 )
 
 // Интерфейс сервиса кинотеатров
@@ -18,11 +19,12 @@ type Services struct {
 
 // Зависимости сервисов
 type Deps struct {
+	Repos *repositories.Repositories
 }
 
 // Возвращает сервисы с зависимостями
 func NewServices(deps Deps) *Services {
 	return &Services{
-		Cinemas: NewCinemaService(),
+		Cinemas: NewCinemaService(deps.Repos.Cinemas),
 	}
 }
