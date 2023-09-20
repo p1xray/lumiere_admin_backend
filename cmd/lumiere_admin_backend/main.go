@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/p1xray/lumiere_admin_backend/internal/app"
 	"github.com/p1xray/lumiere_admin_backend/internal/config"
 )
 
@@ -15,7 +16,8 @@ func main() {
 }
 
 func run() error {
-	_ = config.Read()
+	cfg := config.Read()
+	app.Run(cfg)
 
 	return nil
 }
