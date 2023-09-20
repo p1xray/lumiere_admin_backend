@@ -41,7 +41,7 @@ func (h *Handler) Init(cfg config.Config) *gin.Engine {
 
 // Инициализирует обработчик запросов к API
 func (h *Handler) initAPI(router *gin.Engine) {
-	v1 := v1.NewHandler()
+	v1 := v1.NewHandler(h.Services)
 	api := router.Group("/api")
 	{
 		v1.Init(api)

@@ -21,5 +21,20 @@ func NewCinemaService(c repositories.Cinemas) *CinemaService {
 
 // Возвращает список кинотеатров
 func (cs *CinemaService) GetList(ctx context.Context) ([]domain.Cinema, error) {
-	return nil, nil
+	storeCinemas, err := cs.CinemaRepo.GetList(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	domainCinemas := make([]domain.Cinema, 0)
+	for _, storeCinema := range storeCinemas {
+		domainCinema, err := storeCinema.ToDomain()
+		if err != nil {
+			return nil, err
+		}
+
+		domainCinemas = append(domainCinemas, *domainCinema)
+	}
+
+	return domainCinemas, nil
 }

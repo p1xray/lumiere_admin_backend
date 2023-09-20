@@ -2,6 +2,7 @@ package domain_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/p1xray/lumiere_admin_backend/internal/domain"
 	"github.com/stretchr/testify/assert"
@@ -14,6 +15,8 @@ func TestNewCinema(t *testing.T) {
 	cinemaName := "test cinema name"
 	cinemaDescription := "test cinema description"
 	cinemaAddress := "test cinema address"
+	cinemaCreatedAt := time.Now()
+	cinemaUpdatedAt := time.Now()
 
 	testCases := []struct {
 		name    string
@@ -23,21 +26,21 @@ func TestNewCinema(t *testing.T) {
 		{
 			name: "valid",
 			cinema: func() (*domain.Cinema, error) {
-				return domain.NewCinema(cinemaId, cinemaName, cinemaDescription, cinemaAddress)
+				return domain.NewCinema(cinemaId, cinemaName, cinemaDescription, cinemaAddress, cinemaCreatedAt, cinemaUpdatedAt)
 			},
 			isValid: true,
 		},
 		{
 			name: "invalid cinema id",
 			cinema: func() (*domain.Cinema, error) {
-				return domain.NewCinema(0, cinemaName, cinemaDescription, cinemaAddress)
+				return domain.NewCinema(0, cinemaName, cinemaDescription, cinemaAddress, cinemaCreatedAt, cinemaUpdatedAt)
 			},
 			isValid: false,
 		},
 		{
 			name: "missing cinema name",
 			cinema: func() (*domain.Cinema, error) {
-				return domain.NewCinema(cinemaId, "", cinemaDescription, cinemaAddress)
+				return domain.NewCinema(cinemaId, "", cinemaDescription, cinemaAddress, cinemaCreatedAt, cinemaUpdatedAt)
 			},
 			isValid: false,
 		},
@@ -53,6 +56,8 @@ func TestNewCinema(t *testing.T) {
 				assert.Equal(t, cinemaName, cinema.Name())
 				assert.Equal(t, cinemaDescription, cinema.Description())
 				assert.Equal(t, cinemaAddress, cinema.Address())
+				assert.Equal(t, cinemaCreatedAt, cinema.CreatedAt())
+				assert.Equal(t, cinemaUpdatedAt, cinema.UpdatedAt())
 			} else {
 				assert.Error(t, err)
 			}

@@ -1,12 +1,16 @@
 package repositories
 
 import (
+	"context"
+
 	"github.com/p1xray/lumiere_admin_backend/internal/repositories/cinemarepository"
 	"github.com/p1xray/lumiere_admin_backend/pkg/postgres"
 )
 
 // Интерфейс репозитория кинотеатра
 type Cinemas interface {
+	// Возвращает список кинотеатров из хранилища
+	GetList(ctx context.Context) ([]cinemarepository.Cinema, error)
 }
 
 // Репозитории

@@ -1,18 +1,21 @@
 package cinema
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/p1xray/lumiere_admin_backend/internal/server"
+	"github.com/p1xray/lumiere_admin_backend/internal/services"
 )
 
 // Роуты для кинотеатров
 type CinemaRoutes struct {
+	CinemaService services.Cinemas
 }
 
 // Инициализация поутов для кинотеатров
-func InitCinemaRoutes(api *gin.RouterGroup) {
-	cr := &CinemaRoutes{}
+func InitCinemaRoutes(api *gin.RouterGroup, s *services.Services) {
+	cr := &CinemaRoutes{
+		CinemaService: s.Cinemas,
+	}
 
 	cinema := api.Group("/cinema")
 	{
@@ -21,11 +24,18 @@ func InitCinemaRoutes(api *gin.RouterGroup) {
 }
 
 func (cr *CinemaRoutes) getCinemaList(c *gin.Context) {
-	e := &Cinema{
-		Id:          1,
-		Name:        "cinema list",
-		Description: "cinema list",
-		Address:     "cinema list",
+	cinemas, err := cr.CinemaService.GetList(c.Request.Context())
+	if err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
 	}
-	c.JSON(http.StatusOK, e)
+
+	responseCinemas := make([]Cinema, 0)
+	for _, cinema := range cinemas {
+		responseCinema := Cinema{}
+		responseCinema.FillFrom(cinema)
+		responseCinemas = append(responseCinemas, responseCinema)
+	}
+
+	server.SuccessResponse(c, responseCinemas)
 }
