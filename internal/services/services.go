@@ -21,6 +21,9 @@ type Cinemas interface {
 
 	// Обновляет данные о кинотеатре
 	Update(ctx context.Context, id int64, inp *cinemaservice.CinemaInput) error
+
+	// Удаляет данные о кинотеатре
+	Delete(ctx context.Context, id int64) error
 }
 
 // Сервисы

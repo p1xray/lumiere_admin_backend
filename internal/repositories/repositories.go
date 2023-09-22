@@ -13,14 +13,17 @@ type Cinemas interface {
 	// Возвращает список кинотеатров из хранилища
 	GetList(ctx context.Context) ([]cinemarepository.Cinema, error)
 
-	// Возвращает данные кинотеатра по переданному идентификатору
+	// Возвращает данные кинотеатра из хранилища по переданному идентификатору
 	GetById(ctx context.Context, id int64) (*cinemarepository.Cinema, error)
 
 	// Создает новую запись кинотеатра в хранилище
 	Create(ctx context.Context, cinema *domain.Cinema) error
 
-	// Обновляет запись кинотеатра в БД
+	// Обновляет запись кинотеатра в хранилище
 	Update(ctx context.Context, cinema *domain.Cinema) error
+
+	// Удаляет запись кинотеатра в хранилище
+	Delete(ctx context.Context, id int64) error
 }
 
 // Репозитории

@@ -20,7 +20,7 @@ func NewCinemaRepository(pg *postgres.Postgres) *CinemaRepository {
 	}
 }
 
-// Возвращает список кинотеатров из хранилища
+// Возвращает список кинотеатров из БД
 func (cr *CinemaRepository) GetList(ctx context.Context) ([]Cinema, error) {
 	sql, _, err := cr.pg.Builder.
 		Select("id, name, description, address, created_at, updated_at").
@@ -51,7 +51,7 @@ func (cr *CinemaRepository) GetList(ctx context.Context) ([]Cinema, error) {
 	return entities, nil
 }
 
-// Возвращает данные кинотеатра по переданному идентификатору
+// Возвращает данные кинотеатра из БД по переданному идентификатору
 func (cr *CinemaRepository) GetById(ctx context.Context, id int64) (*Cinema, error) {
 	sql, args, err := cr.pg.Builder.
 		Select("id, name, description, address, created_at, updated_at").
@@ -107,6 +107,25 @@ func (cr *CinemaRepository) Update(ctx context.Context, cinema *domain.Cinema) e
 		Set("address", cinema.Address()).
 		Set("updated_at", cinema.UpdatedAt()).
 		Where(sq.Eq{"id": cinema.Id()}).
+		ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	_, err = cr.pg.Pool.Exec(ctx, sql, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Удаляет запись кинотеатра в БД
+func (cr *CinemaRepository) Delete(ctx context.Context, id int64) error {
+	sql, args, err := cr.pg.Builder.
+		Delete("cinemas").
+		Where(sq.Eq{"id": id}).
 		ToSql()
 
 	if err != nil {

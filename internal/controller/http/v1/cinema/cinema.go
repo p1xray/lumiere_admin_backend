@@ -24,6 +24,7 @@ func InitRoutes(api *gin.RouterGroup, s *services.Services) {
 		cinema.GET("/:id", cr.getDetails)
 		cinema.POST("", cr.create)
 		cinema.PUT("/:id", cr.update)
+		cinema.DELETE("/:id", cr.delete)
 	}
 }
 
@@ -98,6 +99,21 @@ func (cr *CinemaRoutes) update(c *gin.Context) {
 	}
 
 	if err := cr.CinemaService.Update(c.Request.Context(), id, inp); err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
+
+	server.SuccessResponse(c, true)
+}
+
+func (cr *CinemaRoutes) delete(c *gin.Context) {
+	id, err := server.GetIdFromRoute(c)
+	if err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
+
+	if err = cr.CinemaService.Delete(c.Request.Context(), id); err != nil {
 		server.ErrorResponse(c, err.Error())
 		return
 	}

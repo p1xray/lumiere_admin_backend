@@ -90,3 +90,17 @@ func (cs *CinemaService) Update(ctx context.Context, id int64, inp *CinemaInput)
 
 	return nil
 }
+
+// Удаляет данные о кинотеатре
+func (cs *CinemaService) Delete(ctx context.Context, id int64) error {
+	storeCinema, err := cs.CinemaRepo.GetById(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if err = cs.CinemaRepo.Delete(ctx, storeCinema.Id); err != nil {
+		return err
+	}
+
+	return nil
+}
