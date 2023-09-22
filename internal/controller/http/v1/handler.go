@@ -22,6 +22,6 @@ func NewHandler(s *services.Services) *Handler {
 func (h *Handler) Init(api *gin.RouterGroup) {
 	v1 := api.Group("/v1")
 	{
-		cinema.InitCinemaRoutes(v1, h.Services)
+		cinema.InitRoutes(v1, h.Services)
 	}
 }

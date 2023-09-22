@@ -27,3 +27,12 @@ func GetParamFromRoute(c *gin.Context, name string) (int64, error) {
 func GetIdFromRoute(c *gin.Context) (int64, error) {
 	return GetParamFromRoute(c, idParam)
 }
+
+func GetInputFromBody[T interface{}](c *gin.Context) (*T, error) {
+	var inp T
+	if err := c.BindJSON(&inp); err != nil {
+		return nil, ErrInvalidInputBody
+	}
+
+	return &inp, nil
+}

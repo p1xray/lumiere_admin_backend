@@ -25,6 +25,10 @@ func NewCinema(id int64, name, description, address string, createdAt, updatedAt
 		return nil, fmt.Errorf("%w: cinema name is required", ErrRequired)
 	}
 
+	if address == "" {
+		return nil, fmt.Errorf("%w: cinema address is required", ErrRequired)
+	}
+
 	cinema := &Cinema{
 		id:          id,
 		name:        name,
@@ -32,6 +36,25 @@ func NewCinema(id int64, name, description, address string, createdAt, updatedAt
 		address:     address,
 		createdAt:   createdAt,
 		updatedAt:   updatedAt,
+	}
+
+	return cinema, nil
+}
+
+// Возвращает новую доменную модель кинотеатра для создания
+func NewCinemaToCreate(name, description, address string) (*Cinema, error) {
+	if name == "" {
+		return nil, fmt.Errorf("%w: cinema name is required", ErrRequired)
+	}
+
+	if address == "" {
+		return nil, fmt.Errorf("%w: cinema address is required", ErrRequired)
+	}
+
+	cinema := &Cinema{
+		name:        name,
+		description: description,
+		address:     address,
 	}
 
 	return cinema, nil

@@ -1,4 +1,4 @@
-package services
+package cinemaservice
 
 import (
 	"context"
@@ -13,7 +13,7 @@ type CinemaService struct {
 }
 
 // Возвращает новый сервис кинотеатров
-func NewCinemaService(c repositories.Cinemas) *CinemaService {
+func NewService(c repositories.Cinemas) *CinemaService {
 	return &CinemaService{
 		CinemaRepo: c,
 	}
@@ -52,4 +52,18 @@ func (cs *CinemaService) GetDetails(ctx context.Context, id int64) (*domain.Cine
 	}
 
 	return domainCinema, nil
+}
+
+// Создает новый кинотеатр
+func (cs *CinemaService) Create(ctx context.Context, inp *CinemaInput) error {
+	domainCinema, err := inp.ToCreateDomain()
+	if err != nil {
+		return err
+	}
+
+	if err = cs.CinemaRepo.Create(ctx, domainCinema); err != nil {
+		return err
+	}
+
+	return nil
 }

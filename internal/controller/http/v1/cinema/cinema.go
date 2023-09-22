@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/p1xray/lumiere_admin_backend/internal/server"
 	"github.com/p1xray/lumiere_admin_backend/internal/services"
+	"github.com/p1xray/lumiere_admin_backend/internal/services/cinemaservice"
 )
 
 // Роуты для кинотеатров
@@ -12,19 +13,20 @@ type CinemaRoutes struct {
 }
 
 // Инициализация поутов для кинотеатров
-func InitCinemaRoutes(api *gin.RouterGroup, s *services.Services) {
+func InitRoutes(api *gin.RouterGroup, s *services.Services) {
 	cr := &CinemaRoutes{
 		CinemaService: s.Cinemas,
 	}
 
 	cinema := api.Group("/cinema")
 	{
-		cinema.GET("", cr.getCinemaList)
-		cinema.GET("/:id", cr.getCinemaDetails)
+		cinema.GET("", cr.getList)
+		cinema.GET("/:id", cr.getDetails)
+		cinema.POST("", cr.create)
 	}
 }
 
-func (cr *CinemaRoutes) getCinemaList(c *gin.Context) {
+func (cr *CinemaRoutes) getList(c *gin.Context) {
 	cinemas, err := cr.CinemaService.GetList(c.Request.Context())
 	if err != nil {
 		server.ErrorResponse(c, err.Error())
@@ -34,14 +36,17 @@ func (cr *CinemaRoutes) getCinemaList(c *gin.Context) {
 	responseCinemas := make([]Cinema, 0)
 	for _, cinema := range cinemas {
 		responseCinema := Cinema{}
-		responseCinema.FillFrom(cinema)
+		if err := responseCinema.FillFrom(cinema); err != nil {
+			server.ErrorResponse(c, err.Error())
+			return
+		}
 		responseCinemas = append(responseCinemas, responseCinema)
 	}
 
 	server.SuccessResponse(c, responseCinemas)
 }
 
-func (cr *CinemaRoutes) getCinemaDetails(c *gin.Context) {
+func (cr *CinemaRoutes) getDetails(c *gin.Context) {
 	id, err := server.GetIdFromRoute(c)
 	if err != nil {
 		server.ErrorResponse(c, err.Error())
@@ -55,7 +60,33 @@ func (cr *CinemaRoutes) getCinemaDetails(c *gin.Context) {
 	}
 
 	response := Cinema{}
-	response.FillFrom(*cinema)
+	if err := response.FillFrom(*cinema); err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
 
 	server.SuccessResponse(c, response)
+}
+
+func (cr *CinemaRoutes) create(c *gin.Context) {
+	/*
+		var inp CinemaInput
+		if err := c.BindJSON(&inp); err != nil {
+			server.ErrorResponse(c, server.ErrInvalidInputBody.Error())
+			return
+		}
+	*/
+
+	inp, err := server.GetInputFromBody[cinemaservice.CinemaInput](c)
+	if err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
+
+	if err := cr.CinemaService.Create(c.Request.Context(), inp); err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
+
+	server.SuccessResponse(c, true)
 }

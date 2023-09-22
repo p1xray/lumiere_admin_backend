@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 
+	"github.com/p1xray/lumiere_admin_backend/internal/domain"
 	"github.com/p1xray/lumiere_admin_backend/internal/repositories/cinemarepository"
 	"github.com/p1xray/lumiere_admin_backend/pkg/postgres"
 )
@@ -14,6 +15,9 @@ type Cinemas interface {
 
 	// Возвращает подробности кинотеатра
 	GetDetails(ctx context.Context, id int64) (*cinemarepository.Cinema, error)
+
+	// Создает новую запись кинотеатра в хранилище
+	Create(ctx context.Context, cinema *domain.Cinema) error
 }
 
 // Репозитории
