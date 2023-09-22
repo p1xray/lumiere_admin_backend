@@ -3,6 +3,7 @@ package cinemarepository
 import (
 	"context"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/p1xray/lumiere_admin_backend/pkg/postgres"
 )
 
@@ -47,4 +48,26 @@ func (cr *CinemaRepository) GetList(ctx context.Context) ([]Cinema, error) {
 	}
 
 	return entities, nil
+}
+
+// Возвращает подробности кинотеатра
+func (cr *CinemaRepository) GetDetails(ctx context.Context, id int64) (*Cinema, error) {
+	sql, args, err := cr.pg.Builder.
+		Select("id, name, description, address, created_at, updated_at").
+		From("cinemas").
+		Where(sq.Eq{"id": id}).
+		ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	e := &Cinema{}
+	row := cr.pg.Pool.QueryRow(ctx, sql, args...)
+	err = row.Scan(&e.Id, &e.Name, &e.Description, &e.Address, &e.CreatedAt, &e.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return e, nil
 }

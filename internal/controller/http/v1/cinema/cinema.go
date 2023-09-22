@@ -20,6 +20,7 @@ func InitCinemaRoutes(api *gin.RouterGroup, s *services.Services) {
 	cinema := api.Group("/cinema")
 	{
 		cinema.GET("", cr.getCinemaList)
+		cinema.GET("/:id", cr.getCinemaDetails)
 	}
 }
 
@@ -38,4 +39,23 @@ func (cr *CinemaRoutes) getCinemaList(c *gin.Context) {
 	}
 
 	server.SuccessResponse(c, responseCinemas)
+}
+
+func (cr *CinemaRoutes) getCinemaDetails(c *gin.Context) {
+	id, err := server.GetIdFromRoute(c)
+	if err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
+
+	cinema, err := cr.CinemaService.GetDetails(c.Request.Context(), id)
+	if err != nil {
+		server.ErrorResponse(c, err.Error())
+		return
+	}
+
+	response := Cinema{}
+	response.FillFrom(*cinema)
+
+	server.SuccessResponse(c, response)
 }

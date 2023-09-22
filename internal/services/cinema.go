@@ -38,3 +38,18 @@ func (cs *CinemaService) GetList(ctx context.Context) ([]domain.Cinema, error) {
 
 	return domainCinemas, nil
 }
+
+// Возвращает подробности кинотеатра
+func (cs *CinemaService) GetDetails(ctx context.Context, id int64) (*domain.Cinema, error) {
+	storeCinema, err := cs.CinemaRepo.GetDetails(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	domainCinema, err := storeCinema.ToDomain()
+	if err != nil {
+		return nil, err
+	}
+
+	return domainCinema, nil
+}

@@ -11,6 +11,9 @@ import (
 type Cinemas interface {
 	// Возвращает список кинотеатров из хранилища
 	GetList(ctx context.Context) ([]cinemarepository.Cinema, error)
+
+	// Возвращает подробности кинотеатра
+	GetDetails(ctx context.Context, id int64) (*cinemarepository.Cinema, error)
 }
 
 // Репозитории

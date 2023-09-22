@@ -9,7 +9,11 @@ import (
 
 // Интерфейс сервиса кинотеатров
 type Cinemas interface {
+	// Возвращает список кинотеатров
 	GetList(ctx context.Context) ([]domain.Cinema, error)
+
+	// Возвращает подробности кинотеатра
+	GetDetails(ctx context.Context, id int64) (*domain.Cinema, error)
 }
 
 // Сервисы
