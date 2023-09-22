@@ -51,8 +51,8 @@ func (cr *CinemaRepository) GetList(ctx context.Context) ([]Cinema, error) {
 	return entities, nil
 }
 
-// Возвращает подробности кинотеатра
-func (cr *CinemaRepository) GetDetails(ctx context.Context, id int64) (*Cinema, error) {
+// Возвращает данные кинотеатра по переданному идентификатору
+func (cr *CinemaRepository) GetById(ctx context.Context, id int64) (*Cinema, error) {
 	sql, args, err := cr.pg.Builder.
 		Select("id, name, description, address, created_at, updated_at").
 		From("cinemas").
@@ -84,6 +84,29 @@ func (cr *CinemaRepository) Create(ctx context.Context, cinema *domain.Cinema) e
 		Insert("cinemas").
 		Columns("name, description, address, created_at, updated_at").
 		Values(storeCinema.Name, storeCinema.Description, storeCinema.Address, storeCinema.CreatedAt, storeCinema.UpdatedAt).
+		ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	_, err = cr.pg.Pool.Exec(ctx, sql, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Обновляет запись кинотеатра в БД
+func (cr *CinemaRepository) Update(ctx context.Context, cinema *domain.Cinema) error {
+	sql, args, err := cr.pg.Builder.
+		Update("cinemas").
+		Set("name", cinema.Name()).
+		Set("description", cinema.Description()).
+		Set("address", cinema.Address()).
+		Set("updated_at", cinema.UpdatedAt()).
+		Where(sq.Eq{"id": cinema.Id()}).
 		ToSql()
 
 	if err != nil {

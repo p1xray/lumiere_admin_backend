@@ -41,7 +41,7 @@ func (cs *CinemaService) GetList(ctx context.Context) ([]domain.Cinema, error) {
 
 // Возвращает подробности кинотеатра
 func (cs *CinemaService) GetDetails(ctx context.Context, id int64) (*domain.Cinema, error) {
-	storeCinema, err := cs.CinemaRepo.GetDetails(ctx, id)
+	storeCinema, err := cs.CinemaRepo.GetById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -62,6 +62,29 @@ func (cs *CinemaService) Create(ctx context.Context, inp *CinemaInput) error {
 	}
 
 	if err = cs.CinemaRepo.Create(ctx, domainCinema); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Обновляет данные о кинотеатре
+func (cs *CinemaService) Update(ctx context.Context, id int64, inp *CinemaInput) error {
+	storeCinema, err := cs.CinemaRepo.GetById(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	domainCinema, err := storeCinema.ToDomain()
+	if err != nil {
+		return err
+	}
+
+	if err = domainCinema.UpdateCinema(inp.Name, inp.Description, inp.Address); err != nil {
+		return err
+	}
+
+	if err = cs.CinemaRepo.Update(ctx, domainCinema); err != nil {
 		return err
 	}
 

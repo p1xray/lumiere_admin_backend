@@ -18,6 +18,9 @@ type Cinemas interface {
 
 	// Создает новый кинотеатр
 	Create(ctx context.Context, inp *cinemaservice.CinemaInput) error
+
+	// Обновляет данные о кинотеатре
+	Update(ctx context.Context, id int64, inp *cinemaservice.CinemaInput) error
 }
 
 // Сервисы

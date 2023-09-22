@@ -21,14 +21,6 @@ func NewCinema(id int64, name, description, address string, createdAt, updatedAt
 		return nil, fmt.Errorf("%w: cinema id is required", ErrRequired)
 	}
 
-	if name == "" {
-		return nil, fmt.Errorf("%w: cinema name is required", ErrRequired)
-	}
-
-	if address == "" {
-		return nil, fmt.Errorf("%w: cinema address is required", ErrRequired)
-	}
-
 	cinema := &Cinema{
 		id:          id,
 		name:        name,
@@ -38,26 +30,53 @@ func NewCinema(id int64, name, description, address string, createdAt, updatedAt
 		updatedAt:   updatedAt,
 	}
 
+	if err := cinema.validateCinema(); err != nil {
+		return nil, err
+	}
+
 	return cinema, nil
 }
 
 // Возвращает новую доменную модель кинотеатра для создания
 func NewCinemaToCreate(name, description, address string) (*Cinema, error) {
-	if name == "" {
-		return nil, fmt.Errorf("%w: cinema name is required", ErrRequired)
-	}
-
-	if address == "" {
-		return nil, fmt.Errorf("%w: cinema address is required", ErrRequired)
-	}
-
 	cinema := &Cinema{
 		name:        name,
 		description: description,
 		address:     address,
 	}
 
+	if err := cinema.validateCinema(); err != nil {
+		return nil, err
+	}
+
 	return cinema, nil
+}
+
+// Обновляет поля доменной модели
+func (c *Cinema) UpdateCinema(name, description, address string) error {
+	c.name = name
+	c.description = description
+	c.address = address
+	c.updatedAt = time.Now()
+
+	if err := c.validateCinema(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Валидация полей доменной модели
+func (c *Cinema) validateCinema() error {
+	if c.name == "" {
+		return fmt.Errorf("%w: cinema name is required", ErrRequired)
+	}
+
+	if c.address == "" {
+		return fmt.Errorf("%w: cinema address is required", ErrRequired)
+	}
+
+	return nil
 }
 
 // Возвращает идентификатор кинотеатра
