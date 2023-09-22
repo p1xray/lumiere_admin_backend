@@ -69,14 +69,6 @@ func (cr *CinemaRoutes) getDetails(c *gin.Context) {
 }
 
 func (cr *CinemaRoutes) create(c *gin.Context) {
-	/*
-		var inp CinemaInput
-		if err := c.BindJSON(&inp); err != nil {
-			server.ErrorResponse(c, server.ErrInvalidInputBody.Error())
-			return
-		}
-	*/
-
 	inp, err := server.GetInputFromBody[cinemaservice.CinemaInput](c)
 	if err != nil {
 		server.ErrorResponse(c, err.Error())
