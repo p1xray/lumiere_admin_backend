@@ -7,6 +7,10 @@ import (
 	"github.com/p1xray/lumiere_admin_backend/internal/config"
 	v1 "github.com/p1xray/lumiere_admin_backend/internal/controller/http/v1"
 	"github.com/p1xray/lumiere_admin_backend/internal/services"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/p1xray/lumiere_admin_backend/docs"
 )
 
 // Обработчик запросов http сервера
@@ -35,6 +39,7 @@ func (h *Handler) Init(cfg config.Config) *gin.Engine {
 	})
 
 	h.initAPI(router)
+	initSwagger(router)
 
 	return router
 }
@@ -46,4 +51,9 @@ func (h *Handler) initAPI(router *gin.Engine) {
 	{
 		v1.Init(api)
 	}
+}
+
+// Инициализирует документацию swagger
+func initSwagger(router *gin.Engine) {
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }

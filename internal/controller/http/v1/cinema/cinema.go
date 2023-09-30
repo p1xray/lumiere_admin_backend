@@ -28,6 +28,14 @@ func InitRoutes(api *gin.RouterGroup, s *services.Services) {
 	}
 }
 
+// @Summary Получить список кинотеатров
+// @Tags Cinema
+// @Description Получить список кинотеатров
+// @ModuleID getCinemaList
+// @Produce json
+// @Success	200 {object}	server.dataResponse[CinemaList]
+// @Failure	500	{object}	server.response
+// @Router	/api/v1/cinema [get]
 func (cr *CinemaRoutes) getList(c *gin.Context) {
 	cinemas, err := cr.CinemaService.GetList(c.Request.Context())
 	if err != nil {
@@ -45,9 +53,22 @@ func (cr *CinemaRoutes) getList(c *gin.Context) {
 		responseCinemas = append(responseCinemas, responseCinema)
 	}
 
-	server.SuccessResponse(c, responseCinemas)
+	response := CinemaList{
+		Cinemas: responseCinemas,
+	}
+
+	server.SuccessResponse(c, response)
 }
 
+// @Summary Получить подробности кинотеатра
+// @Tags Cinema
+// @Description Получить подробности кинотеатра по идентификатору
+// @ModuleID getCinemaDetails
+// @Produce json
+// @Param id path int64 true "Идентификатор кинотеатра"
+// @Success	200 {object}	server.dataResponse[Cinema]
+// @Failure	500	{object}	server.response
+// @Router	/api/v1/cinema/{id} [get]
 func (cr *CinemaRoutes) getDetails(c *gin.Context) {
 	id, err := server.GetIdFromRoute(c)
 	if err != nil {
@@ -70,6 +91,15 @@ func (cr *CinemaRoutes) getDetails(c *gin.Context) {
 	server.SuccessResponse(c, response)
 }
 
+// @Summary Создать новый кинотеатр
+// @Tags Cinema
+// @Description Создать новый кинотеатр
+// @ModuleID createCinema
+// @Produce json
+// @Param input body cinemaservice.CinemaInput true "Входные параметры для создания кинотеатра"
+// @Success	200 {object}	server.dataResponse[bool]
+// @Failure	500	{object}	server.response
+// @Router	/api/v1/cinema [post]
 func (cr *CinemaRoutes) create(c *gin.Context) {
 	inp, err := server.GetInputFromBody[cinemaservice.CinemaInput](c)
 	if err != nil {
@@ -85,6 +115,16 @@ func (cr *CinemaRoutes) create(c *gin.Context) {
 	server.SuccessResponse(c, true)
 }
 
+// @Summary Редактировать кинотеатр
+// @Tags Cinema
+// @Description Редактировать кинотеатр по идентификатору
+// @ModuleID updateCinema
+// @Produce json
+// @Param id path int64 true "Идентификатор кинотеатра"
+// @Param input body cinemaservice.CinemaInput true "Входные параметры для редактирования кинотеатра"
+// @Success	200 {object}	server.dataResponse[bool]
+// @Failure	500	{object}	server.response
+// @Router	/api/v1/cinema/{id} [put]
 func (cr *CinemaRoutes) update(c *gin.Context) {
 	id, err := server.GetIdFromRoute(c)
 	if err != nil {
@@ -106,6 +146,15 @@ func (cr *CinemaRoutes) update(c *gin.Context) {
 	server.SuccessResponse(c, true)
 }
 
+// @Summary Удалить кинотеатр
+// @Tags Cinema
+// @Description Удалить кинотеатр по идентификатору
+// @ModuleID deleteCinema
+// @Produce json
+// @Param id path int64 true "Идентификатор кинотеатра"
+// @Success	200 {object}	server.dataResponse[bool]
+// @Failure	500	{object}	server.response
+// @Router	/api/v1/cinema/{id} [delete]
 func (cr *CinemaRoutes) delete(c *gin.Context) {
 	id, err := server.GetIdFromRoute(c)
 	if err != nil {

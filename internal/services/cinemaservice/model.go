@@ -11,7 +11,7 @@ type CinemaInput struct {
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
 	Address     string `json:"address"`
-}
+} //@name CinemaInput
 
 // Возвращает доменную модель для создания
 func (c *CinemaInput) ToCreateDomain() (*domain.Cinema, error) {
