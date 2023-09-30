@@ -7,6 +7,11 @@ import (
 	"github.com/p1xray/lumiere_admin_backend/internal/domain"
 )
 
+// Модель списка кинотеатров для запросов
+type CinemaList struct {
+	Cinemas []Cinema `json:"cinemas"`
+} // @name CinemaList
+
 // Модель кинотеатра для запросов
 type Cinema struct {
 	Id          int64     `json:"id"`
@@ -15,7 +20,7 @@ type Cinema struct {
 	Address     string    `json:"address"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
-}
+} // @name Cinema
 
 // Заполняет данные модели кинотеатра для запросов данными доменной модели
 func (c *Cinema) FillFrom(cinema domain.Cinema) error {

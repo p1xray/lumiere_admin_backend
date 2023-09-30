@@ -1,4 +1,4 @@
-.PHONY: dc build run test lint
+.PHONY: dc build run test lint swagger
 
 dc:
 	docker-compose up --remove-orphans -- build
@@ -14,3 +14,6 @@ test:
 
 lint:
 	golangci-lint run
+
+swagger:
+	swag init --pd -g cmd/lumiere_admin_backend/main.go -ot "go,json" -p "camelcase"
