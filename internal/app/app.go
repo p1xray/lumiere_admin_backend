@@ -11,13 +11,33 @@ import (
 
 	"github.com/p1xray/lumiere_admin_backend/internal/config"
 	controller "github.com/p1xray/lumiere_admin_backend/internal/controller/http"
+	"github.com/p1xray/lumiere_admin_backend/internal/repositories"
 	"github.com/p1xray/lumiere_admin_backend/internal/server"
+	"github.com/p1xray/lumiere_admin_backend/internal/services"
+	"github.com/p1xray/lumiere_admin_backend/pkg/postgres"
 )
 
 // Запускает приложение
 func Run(cfg config.Config) {
+	// БД
+	pg, err := postgres.New(cfg.DatabaseUrl, postgres.MaxPoolSize(cfg.PoolMax))
+	if err != nil {
+		log.Fatalf("Postgres New Error: %v", err)
+	}
+	defer pg.Close()
+
+	// Репозитории
+	repos := repositories.NewRepositories(repositories.Deps{
+		Postgres: pg,
+	})
+
+	// Сервисы
+	services := services.NewServices(services.Deps{
+		Repos: repos,
+	})
+
 	// Обработчики запросов
-	handlers := controller.NewHandler()
+	handlers := controller.NewHandler(services)
 
 	// Сервер
 	srv := server.NewServer(cfg, handlers.Init(cfg))
